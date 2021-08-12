@@ -11,8 +11,12 @@ function ManageHome({ navigation }) {
 	const [responseCost, setbaseResponseCost] = useState('');
     const [newProb, setNewProb] = useState('');
     const [newImpact, setNewImpact] = useState('');
-    const [contingency, setContingency] = useState('');
+	const [answerName, setanswerName] = useState('');
 
+
+	const onChangeAnswerName = (txtAnswerName) => {
+    setAnswerName(txtAnswerName);
+  };
 	const onChangeStrategic = (txtStrategic) => {
 		setStrategic(txtStrategic);
 	};
@@ -43,20 +47,39 @@ function ManageHome({ navigation }) {
 	};
 
 	return (
-		<View>
-			<Text style={{ fontSize: 15 }}>Estrategia</Text>
-			<TextInput value={strategic} onChangeText={(txtStrategic) => onChangeStrategic(txtStrategic)} />
-			<Text style={{ fontSize: 15 }}>Custo Resposta</Text>
-			<TextInput value={responseCost} onChangeText={(txtResponseCost) => onChangeResponseCost(txtResponseCost)} />
+    <View>
+      <Text style={{ fontSize: 15 }}>Resposta Planejada</Text>
+      <TextInput
+        value={answerName}
+        onChangeText={(txtAnswerName) => onChangeAnswerName(txtAnswerName)}
+      />
+      <Text style={{ fontSize: 15 }}>Estrategia</Text>
+      <TextInput
+        value={strategic}
+        onChangeText={(txtStrategic) => onChangeStrategic(txtStrategic)}
+      />
+      <Text style={{ fontSize: 15 }}>Custo Resposta</Text>
+      <TextInput
+        value={responseCost}
+        onChangeText={(txtResponseCost) =>
+          onChangeResponseCost(txtResponseCost)
+        }
+      />
 
-			<Text style={{ fontSize: 15 }}>Nova Probabilidade</Text>
-			<TextInput value={newProb} onChangeText={(txtNewProb) => onChangeNewProb(txtNewProb)} />
+      <Text style={{ fontSize: 15 }}>Nova Probabilidade</Text>
+      <TextInput
+        value={newProb}
+        onChangeText={(txtNewProb) => onChangeNewProb(txtNewProb)}
+      />
 
-			<Text style={{ fontSize: 15 }}>Novo Impacto</Text>
-			<TextInput value={newImpact} onChangeText={(txtNewImpact) => onChangeNewImpact(txtNewImpact)} />
-			<Button title="Gerir" onPress={Manage}></Button>
-		</View>
-	);
+      <Text style={{ fontSize: 15 }}>Novo Impacto</Text>
+      <TextInput
+        value={newImpact}
+        onChangeText={(txtNewImpact) => onChangeNewImpact(txtNewImpact)}
+      />
+      <Button title="Gerir" onPress={Manage}></Button>
+    </View>
+  );
 }
 
 const Stack = createStackNavigator();

@@ -24,9 +24,9 @@ function ProjectHome({ navigation }) {
 				}}
 			/>
 			<Button
-				title="Riscos"
+				title="Registro de Riscos"
 				onPress={() => {
-					navigation.navigate('Riscos');
+					navigation.navigate('Registro de Risco');
 				}}
 			/>
 			<Button
@@ -57,14 +57,24 @@ const Stack = createStackNavigator();
 
 function ProjectForm() {
 	return (
-		<Stack.Navigator>
-			<Stack.Screen options={{ headerShown: false }} name="Projeto" component={ProjectHome} />
-			<Stack.Screen name="Editar Projeto" component={EditProjectHome} />
-			<Stack.Screen name="Resultado Pre Gestao" component={PreResultProjectHome} />
-			<Stack.Screen name="Resultado Pos Gestao" component={PosResultProjectHome} />
-			<Stack.Screen name="Riscos" component={RisksMenuHome} />
-		</Stack.Navigator>
-	);
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Projeto"
+        component={ProjectHome}
+      />
+      <Stack.Screen name="Editar Projeto" component={EditProjectHome} />
+      <Stack.Screen
+        name="Resultado Pre Gestao"
+        component={PreResultProjectHome}
+      />
+      <Stack.Screen
+        name="Resultado Pos Gestao"
+        component={PosResultProjectHome}
+      />
+      <Stack.Screen name="Registro de Risco" component={RisksMenuHome} />
+    </Stack.Navigator>
+  );
 }
 
 export default ProjectForm;

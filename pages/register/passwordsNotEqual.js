@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 
 function passwordsNotEqual() {
-	return <Text>As senhas estão diferentes.</Text>;
+	return <Text>Senhas ou email não batem.</Text>;
 }
 
 export default passwordsNotEqual;
