@@ -12,7 +12,7 @@ const AddRisks = (props) => {
   const [impactRisk, setImpactRisk] = useState("");
   const [dateRisk, setDateRisk] = useState("");
   const [probability, setProbability] = useState("");
-  const [cost, setCost] = useState("");
+  const [project, setProject] = useState();
 
   const onChangeName = (txtName) => {
     setName(txtName);
@@ -29,9 +29,6 @@ const AddRisks = (props) => {
   const onChangeProbability = (txtProbability) => {
     setProbability(txtProbability);
   };
-  const onChangeCost = (txtCost) => {
-    setCost(txtCost);
-  };
 
   const Add = () => {
     // if (name == null || typerisk == null || impactRisk == null || dateRisk == null || probability == null)
@@ -40,6 +37,7 @@ const AddRisks = (props) => {
     // }
     const newRisk = firebase.database().ref("Riscos").push();
 
+    setProjectId("-Mi2f61x6AgJvBUXwP0Z");
     console.log("Auto generated key: ", newRisk.key);
     newRisk.set({
       ProjectId: projectId,
@@ -48,15 +46,25 @@ const AddRisks = (props) => {
       ImpactoRisco: impactRisk,
       DataValidade: dateRisk,
       Probabilidade: probability,
-      Custo: cost,
     });
 
     firebase
       .database()
       .ref(`/Projetos/${projectId}`)
-      .update({
-        Riscos: [newRisk.key],
+      .once("value")
+      .then((snapshot) => {
+        setProject(snapshot.val());
       });
+
+    var p = new Object();
+    p = project;
+    console.log("Riscos antes: ", p.Riscos);
+    p.Riscos.push(newRisk.key);
+    console.log("Riscos dps: ", p.Riscos);
+
+    firebase.database().ref(`/Projetos/${projectId}`).update({
+      Riscos: p.Riscos,
+    });
   };
 
   return (
@@ -86,11 +94,6 @@ const AddRisks = (props) => {
         <TextInput
           value={probability}
           onChangeText={(txtProbability) => onChangeProbability(txtProbability)}
-        ></TextInput>
-        <Text style={{ fontSize: 15 }}>Custo</Text>
-        <TextInput
-          value={cost}
-          onChangeText={(txtCost) => onChangeCost(txtCost)}
         ></TextInput>
         <Button title="Adicionar" onPress={Add}></Button>
       </View>

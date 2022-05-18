@@ -32,44 +32,44 @@ const PosResult = (props) => {
       .then((snapshot) => {
         setProject(snapshot.val());
       });
-      
-    project.risksId.map((r) => {
-      database()
-      .ref(`/Riscos/${r}`)
-      .once("value")
-      .then((snapshot) => {
-        setRisk(snapshot.val());
-      });
 
-      setRiskValues(risk.NovoProb x risk.NovoImpacto);
-      setRiskCosts(risk.Custo);
+    // project.risksId.map((r) => {
+    //   database()
+    //   .ref(`/Riscos/${r}`)
+    //   .once("value")
+    //   .then((snapshot) => {
+    //     setRisk(snapshot.val());
+    //   });
 
-      if (risk.TipoRisco = "Oportunidade")
-      {
-        setRiskValuesPositive(risk.NovoImpacto);
-      }
+    //   setRiskValues(risk.NovoProb x risk.NovoImpacto);
+    //   setRiskCosts(risk.Custo);
 
-      if (risk.TipoRisco = "Ameaca")
-      {
-        setRiskValuesNegative(risk.NovoImpacto);
-      }
+    //   if (risk.TipoRisco = "Oportunidade")
+    //   {
+    //     setRiskValuesPositive(risk.NovoImpacto);
+    //   }
 
-    });      
+    //   if (risk.TipoRisco = "Ameaca")
+    //   {
+    //     setRiskValuesNegative(risk.NovoImpacto);
+    //   }
 
-    this.riskValues.map((r) => { 
+    // });
+
+    this.riskValues.map((r) => {
       setExpectedValueRisk(expectedValueRisk + r);
     });
-    this.riskValuesPositive.map((r) => { 
+    this.riskValuesPositive.map((r) => {
       setExpectedValueRiskPos(expectedValueRiskPos + r);
     });
-    this.riskValuesNegative.map((r) => { 
+    this.riskValuesNegative.map((r) => {
       setExpectedValueRiskNeg(expectedValueRiskNeg + r);
     });
-    this.riskCosts.map((r) => { 
+    this.riskCosts.map((r) => {
       setRiskCostsSom(riskCostsSom + r);
     });
 
-    setNewBaseValue(project.ValorBase + riskCostsSom)
+    setNewBaseValue(project.ValorBase + riskCostsSom);
     setExpectedValue(newbaseValue + expectedValueRisk);
     setBestCase(newbaseValue + expectedValueRiskPos);
     setWorstCase(newbaseValue + expectedValueRiskNeg);
