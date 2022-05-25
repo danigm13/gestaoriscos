@@ -31,6 +31,12 @@ const EditProject = (props) => {
         ValorBase: baseValue,
       });
     }
+
+    Actions.Projectt({
+      projectId: projectId,
+      projectName: name,
+      projectVB: baseValue,
+    });
   };
 
   return (

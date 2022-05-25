@@ -16,6 +16,7 @@ const Menu = (props) => {
           array.push({
             id: data.key,
             nome: data.val().Nome,
+            valorbase: data.val().ValorBase,
           });
         });
 
@@ -24,31 +25,29 @@ const Menu = (props) => {
   }, []);
 
   const Projects = () => {
-    return projects.map(({ id, nome }, index) => (
+    return projects.map(({ valorbase, nome, id }, index) => (
       <TouchableOpacity
         key={index}
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        }}
-        onPress={() => Actions.Projectt({ userId: userId, projectId: id })}
+        onPress={() =>
+          Actions.Projectt({
+            userId: userId,
+            projectId: id,
+            projectName: nome,
+            projectVB: valorbase,
+          })
+        }
       >
-        <Text>{id}</Text>
+        <Text style={{ fontSize: 15 }}>Nome: </Text>
         <Text>{nome}</Text>
+        <Text style={{ fontSize: 15 }}>Valor Base: </Text>
+        <Text>{valorbase}</Text>
+        <Text>--</Text>
       </TouchableOpacity>
     ));
   };
 
   return (
     <View>
-      {/* <TouchableOpacity
-        onPress={() =>
-          Actions.Projectt({ userId: userId, projectId: "projectId" })
-        }
-      >
-        {Projects()}
-      </TouchableOpacity> */}
       {Projects()}
       <Button
         title="Criar Projeto"

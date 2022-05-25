@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, View, Text } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import firebase from "../../../../firebaseconection";
 import { database } from "firebase";
 
 //import AddRisksHome from './addRisks/AddRisks';

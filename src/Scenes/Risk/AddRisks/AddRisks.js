@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, View, Text, ScrollView } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import firebase from "../../../../firebaseconection";
-import database from "@react-native-firebase/database";
+import { database } from "firebase";
+import { Actions } from "react-native-router-flux";
 
 const AddRisks = (props) => {
   const [projectId, setProjectId] = useState(props.projectId);
@@ -30,15 +31,18 @@ const AddRisks = (props) => {
     setProbability(txtProbability);
   };
 
+  useEffect(() => {
+    database()
+      .ref(`/Projetos/${projectId}`)
+      .once("value")
+      .then((snapshot) => {
+        setProject(snapshot.val());
+      });
+  }, []);
+
   const Add = () => {
-    // if (name == null || typerisk == null || impactRisk == null || dateRisk == null || probability == null)
-    // {
-    //		navegar ERROR
-    // }
     const newRisk = firebase.database().ref("Riscos").push();
 
-    setProjectId("-Mi2f61x6AgJvBUXwP0Z");
-    console.log("Auto generated key: ", newRisk.key);
     newRisk.set({
       ProjectId: projectId,
       NomeRisco: name,
@@ -48,22 +52,24 @@ const AddRisks = (props) => {
       Probabilidade: probability,
     });
 
-    firebase
-      .database()
-      .ref(`/Projetos/${projectId}`)
-      .once("value")
-      .then((snapshot) => {
-        setProject(snapshot.val());
+    if (project.Riscos[0] == 0) {
+      database()
+        .ref(`/Projetos/${projectId}`)
+        .update({
+          Riscos: [newRisk.key],
+        });
+    } else {
+      project.Riscos.push(newRisk.key);
+
+      database().ref(`/Projetos/${projectId}`).update({
+        Riscos: project.Riscos,
       });
+    }
 
-    var p = new Object();
-    p = project;
-    console.log("Riscos antes: ", p.Riscos);
-    p.Riscos.push(newRisk.key);
-    console.log("Riscos dps: ", p.Riscos);
-
-    firebase.database().ref(`/Projetos/${projectId}`).update({
-      Riscos: p.Riscos,
+    Actions.Projectt({
+      projectId: projectId,
+      projectName: project.Nome,
+      projectVB: project.ValorBase,
     });
   };
 

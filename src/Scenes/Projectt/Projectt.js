@@ -15,9 +15,9 @@ const Projectt = (props) => {
   return (
     <View>
       <Text style={{ fontSize: 15 }}>Nome</Text>
-      <Text>Projeto Teste</Text>
+      <Text>{props.projectName}</Text>
       <Text style={{ fontSize: 15 }}>Valor Base</Text>
-      <Text>3.000.000,00</Text>
+      <Text>{props.projectVB}</Text>
       <Button
         title="Editar Projeto"
         onPress={() =>

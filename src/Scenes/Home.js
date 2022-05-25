@@ -64,12 +64,6 @@ function Home({ navigation }) {
       <Button title="Entrar" onPress={login}></Button>
       <Text>{"\n"}</Text>
       <Button title="Cadastro" onPress={() => Actions.Register()} />
-      <Button
-        title="TESTE"
-        onPress={() =>
-          Actions.Teste({ component: "BANANA", component2: "MACA" })
-        }
-      />
     </View>
   );
 }

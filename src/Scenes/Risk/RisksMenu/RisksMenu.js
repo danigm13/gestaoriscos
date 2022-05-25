@@ -8,106 +8,81 @@ const RisksMenu = (props) => {
   const [userId, setUserId] = useState(props.userId);
   const [project, setProject] = useState();
   const [risk, setRisk] = useState();
-  const [risks, setRisks] = useState([]);
+
+  useEffect(() => {
+    database()
+      .ref(`/Projetos/${props.projectId}`)
+      .once("value")
+      .then((snapshot) => {
+        const project2 = snapshot.val();
+        const newProject = {
+          ...project2,
+          Riscos: [],
+        };
+
+        project2.Riscos.map((Rsid) => {
+          database()
+            .ref(`/Riscos/${Rsid}`)
+            .on("value", (snapshot2) => {
+              const risco = snapshot2.val();
+              setRisk({
+                ...risco,
+                Id: Rsid,
+              });
+              newProject.Riscos.push(risk);
+            });
+        });
+
+        setProject(newProject);
+        // GetRisks();
+      });
+  }, []);
 
   const GetRisks = () => {
-    // database()
-    //   .ref(`/Projetos/-Mf5YrDjYEqCtl34m8MS`)
-    //   .once("value")
-    //   .then((snapshot) => {
-    //     setProject(snapshot.val());
-    //   });
-    useEffect(() => {
-      setTimeout(async () => {
-        database()
-          .ref(`/Projetos/-Mf5YrDjYEqCtl34m8MS`)
-          .once("value")
-          .then((snapshot) => {
-            setProject(snapshot.val());
-          });
-      }, 10000);
-    }, []);
-    console.log("project:", project);
-    if (typeof project === "undefined") {
-      console.log("dentro");
+    console.log("risk", risk);
+    console.log("project", project);
+
+    if (risk == undefined || project == undefined) {
       return (
         <View>
-          <Text>Nenhum Risco Cadastrado</Text>
+          <Text>Carregando</Text>
+        </View>
+      );
+    } else if (project.Riscos[0] == undefined) {
+      return (
+        <View>
+          <Text>Carregando</Text>
         </View>
       );
     } else {
-      console.log("dentro else");
-      var p = new Object();
-      p = project;
-      setRisks([]);
-      console.log(p);
-      console.log(p.Riscos);
-
-      useEffect(() => {
-        p.Riscos.map((r) => {
-          // database()
-          //   .ref(`/Riscos/${r}`)
-          //   .once("value")
-          //   .then((snapshot) => {
-          //     setRisk(snapshot.val());
-          //   });
-          useEffect(() => {
-            setTimeout(async () => {
-              database()
-                .ref(`/Riscos/${r}`)
-                .once("value")
-                .then((snapshot) => {
-                  setRisk(snapshot.val());
-                  console.log("snapshot: ", snapshot.val());
-                });
-            }, 10000);
-          }, []);
-
-          // var ris = new Object();
-          // ris = risk;
-          // console.log("ris: ", ris);
-
-          setTimeout(async () => {
-            var ris = new Object();
-            ris = risk;
-            console.log("ris: ", ris);
-            console.log("risk: ", risk);
-          }, 10000);
-          // setRisks(risks?.push(ris));
-          console.log("risks.NomeRisco: ", risks.NomeRisco);
-          console.log("risks.Probabilidade: ", risks.Probabilidade);
-          console.log("risks.ImpactoRisco: ", risks.ImpactoRisco);
-        });
-      }, []);
+      return project.Riscos.map(
+        ({ NomeRisco, Probabilidade, ImpactoRisco, Id }, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() =>
+              Actions.Risk({
+                userId: userId,
+                projectId: projectId,
+                riskId: Id,
+              })
+            }
+          >
+            <Text style={{ fontSize: 15 }}>Nome: </Text>
+            <Text>{NomeRisco}</Text>
+            <Text style={{ fontSize: 15 }}>Probabilidade: </Text>
+            <Text>{Probabilidade}</Text>
+            <Text style={{ fontSize: 15 }}>Impacto: </Text>
+            <Text>{ImpactoRisco}</Text>
+            <Text>--</Text>
+          </TouchableOpacity>
+        )
+      );
     }
-    return (
-      <View>
-        {risks.map((r, index) => {
-          return (
-            <View key={index}>
-              <Text>{r?.NomeRisco}</Text>
-              <Text>{r?.Probabilidade}</Text>
-              <Text>{r?.ImpactoRisco}</Text>
-            </View>
-          );
-        })}
-      </View>
-    );
   };
 
   return (
     <View>
-      <TouchableOpacity
-        onPress={() =>
-          Actions.Risk({
-            userId: userId,
-            projectId: projectId,
-            riskId: "teste",
-          })
-        }
-      >
-        {GetRisks()}
-      </TouchableOpacity>
+      {GetRisks()}
       <Button
         title="Adicionar Novo Risco"
         onPress={() =>

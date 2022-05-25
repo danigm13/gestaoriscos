@@ -32,7 +32,7 @@ const CreateProject = (props) => {
         UserId: userId,
         Nome: name,
         ValorBase: baseValue,
-        Riscos: [],
+        Riscos: [0],
       })
       .then(() => console.log("Data updated."));
 

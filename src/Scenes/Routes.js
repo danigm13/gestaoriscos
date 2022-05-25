@@ -34,7 +34,6 @@ const Routes = () => {
             <Scene key="Intro" component={Intro} hideNavBar initial />
           )} */}
           <Scene key="Home" component={Home} hideNavBar initial />
-          <Scene key="BABA" component={Teste} />
           <Scene key="Menu" component={Menu} />
           <Scene key="LoginFail" component={LoginFail} />
           <Scene key="Register" component={Register} />
