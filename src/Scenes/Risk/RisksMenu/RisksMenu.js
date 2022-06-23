@@ -15,6 +15,7 @@ const RisksMenu = (props) => {
       .once("value")
       .then((snapshot) => {
         const project2 = snapshot.val();
+        // console.log("project", project2);
         const newProject = {
           ...project2,
           Riscos: [],
@@ -25,11 +26,14 @@ const RisksMenu = (props) => {
             .ref(`/Riscos/${Rsid}`)
             .on("value", (snapshot2) => {
               const risco = snapshot2.val();
-              setRisk({
+              console.log("risco", risco);
+              const r = {
                 ...risco,
                 Id: Rsid,
-              });
-              newProject.Riscos.push(risk);
+              };
+              setRisk(r);
+              console.log("r", r);
+              newProject.Riscos.push(r);
             });
         });
 
@@ -39,8 +43,8 @@ const RisksMenu = (props) => {
   }, []);
 
   const GetRisks = () => {
-    console.log("risk", risk);
-    console.log("project", project);
+    // console.log("risk", risk);
+    // console.log("project", project);
 
     if (risk == undefined || project == undefined) {
       return (
@@ -56,11 +60,26 @@ const RisksMenu = (props) => {
       );
     } else {
       return project.Riscos.map(
-        ({ NomeRisco, Probabilidade, ImpactoRisco, Id }, index) => (
+        (
+          {
+            NomeRisco,
+            Probabilidade,
+            ImpactoRisco,
+            Id,
+            TipoRisco,
+            DataValidade,
+          },
+          index
+        ) => (
           <TouchableOpacity
             key={index}
             onPress={() =>
               Actions.Risk({
+                nameRisk: NomeRisco,
+                probRisk: Probabilidade,
+                impactRisk: ImpactoRisco,
+                typeRisk: TipoRisco,
+                dateRisk: DataValidade,
                 userId: userId,
                 projectId: projectId,
                 riskId: Id,

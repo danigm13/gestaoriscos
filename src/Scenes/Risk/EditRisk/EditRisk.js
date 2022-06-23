@@ -58,6 +58,17 @@ const EditRisk = (props) => {
         Probabilidade: probability,
       });
     }
+
+    Actions.Risk({
+      nameRisk: props.nameRisk,
+      probRisk: props.probRisk,
+      impactRisk: props.impactRisk,
+      typeRisk: props.typeRisk,
+      dateRisk: props.dateRisk,
+      userId: userId,
+      projectId: projectId,
+      riskId: riskId,
+    });
   };
 
   return (

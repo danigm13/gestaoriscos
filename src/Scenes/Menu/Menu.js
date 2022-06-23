@@ -25,25 +25,33 @@ const Menu = (props) => {
   }, []);
 
   const Projects = () => {
-    return projects.map(({ valorbase, nome, id }, index) => (
-      <TouchableOpacity
-        key={index}
-        onPress={() =>
-          Actions.Projectt({
-            userId: userId,
-            projectId: id,
-            projectName: nome,
-            projectVB: valorbase,
-          })
-        }
-      >
-        <Text style={{ fontSize: 15 }}>Nome: </Text>
-        <Text>{nome}</Text>
-        <Text style={{ fontSize: 15 }}>Valor Base: </Text>
-        <Text>{valorbase}</Text>
-        <Text>--</Text>
-      </TouchableOpacity>
-    ));
+    if (!projects || projects == undefined) {
+      return (
+        <View>
+          <Text>Nenhum Projeto Cadastrado</Text>
+        </View>
+      );
+    } else {
+      return projects.map(({ valorbase, nome, id }, index) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() =>
+            Actions.Projectt({
+              userId: userId,
+              projectId: id,
+              projectName: nome,
+              projectVB: valorbase,
+            })
+          }
+        >
+          <Text style={{ fontSize: 15 }}>Nome: </Text>
+          <Text>{nome}</Text>
+          <Text style={{ fontSize: 15 }}>Valor Base: </Text>
+          <Text>{valorbase}</Text>
+          <Text>--</Text>
+        </TouchableOpacity>
+      ));
+    }
   };
 
   return (

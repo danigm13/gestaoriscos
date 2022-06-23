@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Button, View, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Button, View, Text, Alert } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import firebase from "../../../../firebaseconection";
+import { Actions } from "react-native-router-flux";
+import { database } from "firebase";
 
 //import AddRisksHome from './addRisks/AddRisks';
 
@@ -21,84 +23,140 @@ const PosResult = (props) => {
   const [expectedValueRiskPos, setExpectedValueRiskPos] = useState("");
   const [expectedValueRiskNeg, setExpectedValueRiskNeg] = useState("");
   const [baseValue, setBaseValue] = useState("");
-  const [newbaseValue, setNewBaseValue] = useState("");
+  const [newBaseValue, setNewBaseValue] = useState("");
   const [riskCosts, setRiskCosts] = useState([]);
   const [riskCostsSom, setRiskCostsSom] = useState("");
 
-  const Calculate = () => {
+  useEffect(() => {
     database()
-      .ref(`/Projetos/${projectId}`)
+      .ref(`/Projetos/${props.projectId}`)
       .once("value")
       .then((snapshot) => {
-        setProject(snapshot.val());
+        const project = snapshot.val();
+        const newProject = {
+          ...project,
+          Riscos: [],
+        };
+
+        project.Riscos.map((risco) => {
+          database()
+            .ref(`/Riscos/${risco}`)
+            .on("value", (snapshot2) => {
+              const risco = snapshot2.val();
+              newProject.Riscos.push(risco);
+            });
+        });
+
+        setProject(newProject);
       });
+  }, []);
 
-    // project.risksId.map((r) => {
-    //   database()
-    //   .ref(`/Riscos/${r}`)
-    //   .once("value")
-    //   .then((snapshot) => {
-    //     setRisk(snapshot.val());
-    //   });
+  const Calculate = () => {
+    const riskVP = [];
+    const riskVN = [];
+    const vp = [];
+    const vn = [];
+    const cost = [];
 
-    //   setRiskValues(risk.NovoProb x risk.NovoImpacto);
-    //   setRiskCosts(risk.Custo);
+    setBaseValue(project.ValorBase);
+    project.Riscos.forEach((ris) => {
+      if (ris.Gerido == false) {
+        console.log("dentro");
+        return Alert.alert("Riscos não foram geridos");
+      }
+      console.log("fora");
 
-    //   if (risk.TipoRisco = "Oportunidade")
-    //   {
-    //     setRiskValuesPositive(risk.NovoImpacto);
-    //   }
+      if (ris.TipoRisco == "Oportunidade") {
+        riskVP.push(parseInt(ris.NovoImpacto));
+        vp.push(
+          parseInt(ris.NovaProbabilidade) * parseInt(ris.NovoImpacto / 100)
+        );
+      }
 
-    //   if (risk.TipoRisco = "Ameaca")
-    //   {
-    //     setRiskValuesNegative(risk.NovoImpacto);
-    //   }
+      if (ris.TipoRisco == "Ameaca") {
+        riskVN.push(parseInt(ris.NovoImpacto));
+        vn.push(
+          parseInt(ris.NovaProbabilidade) * parseInt(ris.NovoImpacto / 100)
+        );
+      }
 
-    // });
-
-    this.riskValues.map((r) => {
-      setExpectedValueRisk(expectedValueRisk + r);
-    });
-    this.riskValuesPositive.map((r) => {
-      setExpectedValueRiskPos(expectedValueRiskPos + r);
-    });
-    this.riskValuesNegative.map((r) => {
-      setExpectedValueRiskNeg(expectedValueRiskNeg + r);
-    });
-    this.riskCosts.map((r) => {
-      setRiskCostsSom(riskCostsSom + r);
+      cost.push(parseInt(ris.CustoResposta));
     });
 
-    setNewBaseValue(project.ValorBase + riskCostsSom);
-    setExpectedValue(newbaseValue + expectedValueRisk);
-    setBestCase(newbaseValue + expectedValueRiskPos);
-    setWorstCase(newbaseValue + expectedValueRiskNeg);
+    setRiskValuesPositive(riskVP);
+    setRiskValuesNegative(riskVN);
+    setRiskCosts(cost);
+
+    var rVvp = 0;
+    vp.map((r) => {
+      rVvp = rVvp + r;
+    });
+    var rVvn = 0;
+    vn.map((r) => {
+      rVvn = rVvn + r;
+    });
+    console.log("N: ", rVvn);
+    console.log("P: ", rVvp);
+    setExpectedValueRisk(rVvn - rVvp);
+    console.log("expectedValueRisk: ", expectedValueRisk);
+
+    var rVP = 0;
+    riskValuesPositive.map((r) => {
+      rVP = rVP + r;
+    });
+    setExpectedValueRiskPos(rVP);
+
+    var rVN = 0;
+    riskValuesNegative.map((r) => {
+      rVN = rVN + r;
+    });
+    setExpectedValueRiskNeg(rVN);
+
+    var cM = 0;
+    riskCosts.map((r) => {
+      cM = cM + r;
+    });
+    setRiskCostsSom(cM);
+
+    console.log("baseValue: ", baseValue);
+    setNewBaseValue(parseInt(baseValue) + riskCostsSom);
+    setExpectedValue(parseInt(baseValue) + expectedValueRisk);
+    setBestCase(parseInt(baseValue) - expectedValueRiskPos);
+    setWorstCase(parseInt(baseValue) + expectedValueRiskNeg);
 
     database().ref(`/Projetos/${projectId}`).update({
-      NovoValorBase: newbaseValue,
+      NovoValorBase: newBaseValue,
       ValorEsperado: expectedValue,
       PiorCaso: worstCase,
       MelhorCaso: bestCase,
     });
   };
 
-  return (
-    <View>
-      <Text style={{ fontSize: 15 }}>Novo Valor Base</Text>
-      <Text>{newBaseValue}</Text>
+  if (!project || project == undefined || project.Riscos.Gerido == false) {
+    return (
+      <View>
+        <Text>Carregando</Text>
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Text style={{ fontSize: 15 }}>Novo Valor Base</Text>
+        <Text>{newBaseValue}</Text>
 
-      <Text style={{ fontSize: 15 }}>Valor Esperado</Text>
-      <Text>{expectedValue}</Text>
+        <Text style={{ fontSize: 15 }}>Valor Esperado</Text>
+        <Text>{expectedValue}</Text>
 
-      <Text style={{ fontSize: 15 }}>Pior Caso</Text>
-      <Text>{worstCase}</Text>
+        <Text style={{ fontSize: 15 }}>Pior Caso</Text>
+        <Text>{worstCase}</Text>
 
-      <Text style={{ fontSize: 15 }}>Melhor Caso</Text>
-      <Text>{bestCase}</Text>
+        <Text style={{ fontSize: 15 }}>Melhor Caso</Text>
+        <Text>{bestCase}</Text>
 
-      <Button title="Calcular" onPress={Calculate}></Button>
-    </View>
-  );
+        <Button title="Calcular" onPress={Calculate}></Button>
+      </View>
+    );
+  }
 };
 
 export default PosResult;

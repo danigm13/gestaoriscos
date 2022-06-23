@@ -11,19 +11,24 @@ const Risk = (props) => {
   return (
     <View>
       <Text style={{ fontSize: 15 }}>Nome</Text>
-      <Text>risco.nome</Text>
+      <Text>{props.nameRisk}</Text>
       <Text style={{ fontSize: 15 }}>Tipo</Text>
-      <Text>risco.Tipo</Text>
+      <Text>{props.typeRisk}</Text>
       <Text style={{ fontSize: 15 }}>Probabilidade</Text>
-      <Text>risco.Probabilidade</Text>
+      <Text>{props.probRisk}</Text>
       <Text style={{ fontSize: 15 }}>Impacto</Text>
-      <Text>risco.Impacto</Text>
+      <Text>{props.impactRisk}</Text>
       <Text style={{ fontSize: 15 }}>Data</Text>
-      <Text>risco.Data</Text>
+      <Text>{props.dateRisk}</Text>
       <Button
         title="Editar"
         onPress={() =>
           Actions.EditRisk({
+            nameRisk: props.nameRisk,
+            probRisk: props.probRisk,
+            impactRisk: props.impactRisk,
+            typeRisk: props.typeRisk,
+            dateRisk: props.dateRisk,
             userId: userId,
             projectId: projectId,
             riskId: riskId,
@@ -34,6 +39,11 @@ const Risk = (props) => {
         title="Gerir"
         onPress={() =>
           Actions.Manage({
+            nameRisk: props.nameRisk,
+            probRisk: props.probRisk,
+            impactRisk: props.impactRisk,
+            typeRisk: props.typeRisk,
+            dateRisk: props.dateRisk,
             userId: userId,
             projectId: projectId,
             riskId: riskId,

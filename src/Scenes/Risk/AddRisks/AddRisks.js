@@ -50,6 +50,7 @@ const AddRisks = (props) => {
       ImpactoRisco: impactRisk,
       DataValidade: dateRisk,
       Probabilidade: probability,
+      Gerido: false,
     });
 
     if (project.Riscos[0] == 0) {

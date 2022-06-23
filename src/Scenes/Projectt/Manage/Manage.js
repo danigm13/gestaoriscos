@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Button, View, Text } from "react-native";
+import { Button, View, Text, Alert } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { Actions } from "react-native-router-flux";
 import firebase from "../../../../firebaseconection";
+import { database } from "firebase";
 
 //import AddRisksHome from './addRisks/AddRisks';
 
@@ -13,7 +15,7 @@ const Manage = (props) => {
   const [responseCost, setbaseResponseCost] = useState("");
   const [newProb, setNewProb] = useState("");
   const [newImpact, setNewImpact] = useState("");
-  const [answerName, setanswerName] = useState("");
+  const [answerName, setAnswerName] = useState("");
 
   const onChangeAnswerName = (txtAnswerName) => {
     setAnswerName(txtAnswerName);
@@ -38,7 +40,20 @@ const Manage = (props) => {
       CustoResposta: responseCost,
       NovaProbabilidade: newProb,
       NovoImpacto: newImpact,
+      Gerido: true,
     });
+
+    Alert.alert("Risco Gerido");
+    // Actions.Risk({
+    //   nameRisk: props.nameRisk,
+    //   probRisk: props.probRisk,
+    //   impactRisk: props.impactRisk,
+    //   typeRisk: props.typeRisk,
+    //   dateRisk: props.dateRisk,
+    //   userId: userId,
+    //   projectId: projectId,
+    //   riskId: riskId,
+    // });
   };
 
   return (
